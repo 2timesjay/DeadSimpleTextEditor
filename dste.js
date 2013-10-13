@@ -1,0 +1,54 @@
+var editable = document.getElementById('editable');
+var currentDoc = 'contenteditable';
+var lb = document.getElementById('listbody');
+var currentNoteList = localStorage.getItem('notelist');
+if(currentNoteList){
+  lb.innerHTML = currentNoteList;
+}
+
+addEvent(editable, 'blur', function () {
+  // lame that we're hooking the blur event
+  localStorage.setItem(currentDoc, this.innerHTML);
+  document.designMode = 'off';
+});
+
+addEvent(editable, 'focus', function () {
+  document.designMode = 'on';
+});
+
+addEvent(document.getElementById('clear'), 'click', function () {
+  localStorage.clear();
+  window.location = window.location; // refresh
+});
+
+$('#create').keyup(function (event) {
+  console.log("KEYUP!" + event.keyCode);
+  if(event.keyCode == 13){
+  //if(true){
+    console.log(this.value);
+    var newDocId = this.value; 
+    var elem = '<li><span class="note" id ="'+newDocId+'">'+newDocId +'</span></li>'
+    console.log(elem);
+    $("#listbody").append(elem)
+    addEvent(document.getElementsByClassName('note'), 'click', function () {
+      //console.log(this);  
+      currentDoc = this.id;
+      editable.innerHTML = localStorage.getItem(currentDoc);
+      localStorage.setItem(currentDoc, editable.innerHTML);
+    });
+    localStorage.setItem('notelist',lb.innerHTML);
+  }
+});
+
+
+
+//addEvent(document.getElementById('what'), 'click', function () {
+//  currentDoc = 'what';
+//  editable.innerHTML = localStorage.getItem('what');
+//  //window.location = window.location; // refresh
+//  localStorage.setItem('what', editable.innerHTML);
+//});
+
+//if (localStorage.getItem('contenteditable')) {
+//  editable.innerHTML = localStorage.getItem('contenteditable');
+//}
